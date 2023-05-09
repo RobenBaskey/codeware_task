@@ -32,6 +32,7 @@ class _DispalyPageState extends State<DispalyPage> {
     isLoading = true;
     setState(() {});
     var data = List<dynamic>.from(json.decode(inputData));
+
     for (var element in data) {
       if (element.runtimeType == List) {
         var el = element as List;
@@ -39,17 +40,39 @@ class _DispalyPageState extends State<DispalyPage> {
           demoList.add(AndroidVerison(id: lData['id'], title: lData['title']));
         }
       } else {
-        element.forEach((key, value) {
-          demoList.add(AndroidVerison(id: value['id'], title: value['title']));
+        var loop = 0;
+        var el = element as Map;
+        el.forEach((key, value) {
+          int k = int.parse(key.toString());
+          print("$k , $loop");
+          var difference = k - loop;
+          print(difference);
+          if (difference != 0) {
+            for (int i = 0; i < difference; i++) {
+              demoList.add(AndroidVerison());
+              loop++;
+            }
+            demoList
+                .add(AndroidVerison(id: value['id'], title: value['title']));
+            loop++;
+          } else {
+            demoList
+                .add(AndroidVerison(id: value['id'], title: value['title']));
+            loop++;
+          }
+
+          // if (int.parse(key.toString()) > loop) {
+          //   demoList
+          //       .add(AndroidVerison(id: value['id'], title: value['title']));
+          // }
         });
+        // for (int i = 1; i <= totalLoop + 1; i++) {
+        //   //print(el.entries.elementAt(i).key);
+        //   //demoList.add(AndroidVerison(id: value['id'], title: value['title']));
+        // }
       }
     }
-    if (widget.title == "Output-1") {
-      demoList.insert(2, AndroidVerison());
-    } else {
-      demoList.insert(2, AndroidVerison());
-      demoList.insert(5, AndroidVerison());
-    }
+
     dataList = demoList;
     isLoading = false;
     setState(() {});
