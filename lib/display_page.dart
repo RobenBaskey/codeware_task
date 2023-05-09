@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 import 'version_model.dart';
@@ -26,7 +25,7 @@ class _DispalyPageState extends State<DispalyPage> {
   @override
   void initState() {
     super.initState();
-    getData(widget.title == "Display 1" ? input1 : input2);
+    getData(widget.title == "Output-1" ? input1 : input2);
   }
 
   getData(String inputData) async {
@@ -44,6 +43,12 @@ class _DispalyPageState extends State<DispalyPage> {
           demoList.add(AndroidVerison(id: value['id'], title: value['title']));
         });
       }
+    }
+    if (widget.title == "Output-1") {
+      demoList.insert(2, AndroidVerison());
+    } else {
+      demoList.insert(2, AndroidVerison());
+      demoList.insert(5, AndroidVerison());
     }
     dataList = demoList;
     isLoading = false;
@@ -101,32 +106,43 @@ class _DispalyPageState extends State<DispalyPage> {
                   height: size.height * 0.02,
                 ),
                 Expanded(
-                    child: ListView.builder(
-                        itemCount: dataList.length,
-                        itemBuilder: (context, index) {
-                          var result = dataList[index];
-                          return Container(
-                            margin: EdgeInsets.only(bottom: size.height * 0.03),
-                            padding: EdgeInsets.all(size.width * 0.04),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(size.width * 0.02),
-                                border: Border.all(
-                                    color: Colors.blueAccent.withOpacity(0.5))),
-                            child: Row(children: <Widget>[
-                              Text(
-                                result.id.toString(),
-                              ),
-                              Expanded(
-                                  child: Center(
-                                      child: Text(
-                                result.title.toString(),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600),
-                              )))
-                            ]),
-                          );
-                        }))
+                    child: SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.all(size.width * 0.02),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black, width: 3)),
+                    child: Column(children: <Widget>[
+                      Text(
+                        widget.title,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            decoration: TextDecoration.underline),
+                      ),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      GridView.builder(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.all(0),
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: dataList.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisSpacing: size.width * 0.01,
+                                  mainAxisSpacing: size.width * 0.01,
+                                  crossAxisCount: 4),
+                          itemBuilder: (context, index) {
+                            return Center(
+                                child: Text(
+                              dataList[index].title ?? "",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: size.width * 0.03),
+                            ));
+                          })
+                    ]),
+                  ),
+                ))
               ]),
             ),
     );

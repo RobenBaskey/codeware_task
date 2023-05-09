@@ -39,8 +39,11 @@ class CustomButton extends StatelessWidget {
     var size = MediaQuery.of(context).size;
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (_) => DispalyPage(title: title)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => DispalyPage(
+                    title: title == "Display 1" ? "Output-1" : "Output-2")));
       },
       child: Container(
         height: size.width * 0.4,
