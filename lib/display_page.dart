@@ -58,16 +58,7 @@ class _DispalyPageState extends State<DispalyPage> {
                 .add(AndroidVerison(id: value['id'], title: value['title']));
             loop++;
           }
-
-          // if (int.parse(key.toString()) > loop) {
-          //   demoList
-          //       .add(AndroidVerison(id: value['id'], title: value['title']));
-          // }
         });
-        // for (int i = 1; i <= totalLoop + 1; i++) {
-        //   //print(el.entries.elementAt(i).key);
-        //   //demoList.add(AndroidVerison(id: value['id'], title: value['title']));
-        // }
       }
     }
 
