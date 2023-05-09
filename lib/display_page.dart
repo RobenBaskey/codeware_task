@@ -44,9 +44,7 @@ class _DispalyPageState extends State<DispalyPage> {
         var el = element as Map;
         el.forEach((key, value) {
           int k = int.parse(key.toString());
-          print("$k , $loop");
           var difference = k - loop;
-          print(difference);
           if (difference != 0) {
             for (int i = 0; i < difference; i++) {
               demoList.add(AndroidVerison());
