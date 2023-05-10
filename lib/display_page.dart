@@ -13,12 +13,14 @@ class DispalyPage extends StatefulWidget {
 
 class _DispalyPageState extends State<DispalyPage> {
   final String input1 =
-      """[{"0":{"id":1,"title":"Gingerbread"},"1":{"id":2,"title":"Jellybean"},"3":{"id":3,"title":"KitKat"}},[{"id":4,"title":"Lollipop"},{"id":5,"title":"Pie"},{"id":6,"title":"Oreo"},{"id":7,"title":"Nougat"}]]""";
+      """[{"0":{"id":1,"title":"Gingerbread"},"1":{"id":2,"title":"Jellybean"},"2":{"id":3,"title":"KitKat"}},[{"id":4,"title":"Lollipop"},{"id":5,"title":"Pie"},{"id":6,"title":"Oreo"},{"id":7,"title":"Nougat"},{"id":8,"title":"Marshmellow"}],{"0":{"id":1,"title":"Gingerbread"},"4":{"id":3,"title":"KitKat"}}]""";
 
   final String input2 =
       """[{"0":{"id":1,"title":"Gingerbread"},"1":{"id":2,"title":"Jellybean"},"3":{"id":3,"title":"KitKat"}},{"0":{"id":8,"title":"Froyo"},"2":{"id":9,"title":"Éclair"},"3":{"id":10,"title":"Donut"}},[{"id":4,"title":"Lollipop"},{"id":5,"title":"Pie"},{"id":6,"title":"Oreo"},{"id":7,"title":"Nougat"}]]""";
 
   bool isLoading = false;
+  int _maximumIndexNo = 0;
+  int _mapMaximumLength = 0;
   List<AndroidVerison> demoList = [];
   List<AndroidVerison> dataList = [];
 
@@ -33,14 +35,35 @@ class _DispalyPageState extends State<DispalyPage> {
     setState(() {});
     var data = List<dynamic>.from(json.decode(inputData));
 
+    for (var myData in data) {
+      if (myData.runtimeType == List) {
+        var el = myData as List;
+        _maximumIndexNo =
+            el.length > _maximumIndexNo ? el.length : _maximumIndexNo;
+      } else {
+        var el = myData as Map;
+        int lastLength = int.parse(el.entries.last.key.toString());
+        _mapMaximumLength = lastLength + 1;
+        _maximumIndexNo =
+            lastLength > _maximumIndexNo ? lastLength : _maximumIndexNo;
+      }
+    }
+    print("Max grid $_maximumIndexNo");
+
     for (var element in data) {
       if (element.runtimeType == List) {
         var el = element as List;
-        for (var lData in el) {
-          demoList.add(AndroidVerison(id: lData['id'], title: lData['title']));
+        for (int i = 0; i < _maximumIndexNo; i++) {
+          if (el.length <= i) {
+            demoList.add(AndroidVerison());
+          } else {
+            demoList
+                .add(AndroidVerison(id: el[i]['id'], title: el[i]['title']));
+          }
         }
       } else {
         var loop = 0;
+        _mapMaximumLength = 0;
         var el = element as Map;
         el.forEach((key, value) {
           int k = int.parse(key.toString());
@@ -59,6 +82,18 @@ class _DispalyPageState extends State<DispalyPage> {
             loop++;
           }
         });
+
+        var length = _mapMaximumLength > loop ? _mapMaximumLength : loop;
+        _maximumIndexNo = length > _maximumIndexNo ? length : _maximumIndexNo;
+        print("Map max len $length");
+        for (int i = 1; i <= _maximumIndexNo; i++) {
+          if (length < _maximumIndexNo) {
+            demoList.add(AndroidVerison());
+            ++length;
+          } else {
+            ++length;
+          }
+        }
       }
     }
 
@@ -142,11 +177,12 @@ class _DispalyPageState extends State<DispalyPage> {
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisSpacing: size.width * 0.01,
                                   mainAxisSpacing: size.width * 0.01,
-                                  crossAxisCount: 4),
+                                  crossAxisCount: _maximumIndexNo),
                           itemBuilder: (context, index) {
                             return Center(
                                 child: Text(
                               dataList[index].title ?? "",
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: size.width * 0.03),
